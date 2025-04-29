@@ -9,7 +9,7 @@ import { setStep, setCourse, setEditCourse} from '../../../../../slices/courseSl
 import IconBtn from '../../../../common/IconBtn';
 import { COURSE_STATUS } from '../../../../../utils/constants';
 import { toast } from 'react-hot-toast';
-import Upload from './Upload'
+import Upload from '../Upload'
 import ChipInput from './ChipInput';
 
 const CourseInformationForm = () => {

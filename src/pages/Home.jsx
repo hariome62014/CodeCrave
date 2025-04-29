@@ -20,7 +20,11 @@ import RatingSlider from '../Components/core/Ratings/RatingSlider';
 
 function Home() {
     const [CatalogPageData, setCatalogPageData] = useState(null);
-    const categoryID = "6475dbeb49dcc886b5698441";
+    const categoryID = "676061d7d6c2266b8eeef84b";
+    const dispatch = useDispatch();
+
+
+    
 
     useEffect(() => {
         const fetchCatalogPageData = async () => {
@@ -33,8 +37,8 @@ function Home() {
         if (categoryID) {
             fetchCatalogPageData();
         }
-    }, [categoryID])
-    const dispatch = useDispatch();
+    }, [categoryID,dispatch])
+   
   return (
     <div>
         <div className=' mx-auto relative flex flex-col w-11/12 items-center justify-between text-white '>
@@ -60,7 +64,7 @@ function Home() {
                 <CTAButton active={false} linkto={"/login"} >Book a Demo</CTAButton>
             </div>
 
-            <div className='mx-3 my-12 shadow-blue-200 w-[70%] relative'>
+            <div className='mx-3 my-12 shadow-blue-200 w-11/12 relative'>
               <div className='grad2 -top-10 w-[800px]'></div>
             <video className='video'
             muted
@@ -77,7 +81,7 @@ function Home() {
                 heading={
                     <div className=' font-semibold text-2xl lg:text-4xl sm:w-full'>
                         Unlock Your
-                        <HighlightText text={"coding potential"}/>
+                        <HighlightText text={" coding potential "}/>
                         with our online courses
                     </div>
                 }
@@ -104,18 +108,28 @@ function Home() {
                 backgroudGradient={"grad"}
             />
         </div>
-        <div className=' mx-auto box-content w-full max-w-maxContentTab px- py-12 lg:max-w-maxContent'>
-        <h2 className='section_heading mb-6 md:text-3xl text-xl'>
-           Most Popular Courses
-        </h2>
-        <CourseSlider Courses={CatalogPageData?.selectedCourses}/>
-      </div>       
-        <div className=' mx-auto box-content w-full max-w-maxContentTab px- py-12 lg:max-w-maxContent'>
-        <h2 className='section_heading mb-6 md:text-3xl text-xl'>
-           Students are learning
-        </h2>
-        <CourseSlider Courses={CatalogPageData?.differentCourses}/>
-      </div>       
+        {CatalogPageData?.mostSellingCourses?.length > 0 && (
+        <div className=' mx-auto box-content w-full max-w-maxContentTab  py-12 lg:max-w-maxContent'>
+        
+  
+    <h2 className='section_heading mb-6 md:text-3xl text-xl'>
+      Most Popular Courses
+    </h2>
+    <CourseSlider Courses={CatalogPageData.mostSellingCourses} />
+ 
+
+
+      </div>  
+      )}
+
+   {CatalogPageData?.differentCourses?.length > 0 && (
+  <div className='mx-auto box-content w-full max-w-maxContentTab py-12 lg:max-w-maxContent'>
+    <h2 className='section_heading mb-6 md:text-3xl text-xl'>
+      Students are learning
+    </h2>
+    <CourseSlider Courses={CatalogPageData?.differentCourses} />
+  </div>
+)}
 
 
                 {/* Code Section 2 */}
@@ -195,7 +209,7 @@ function Home() {
 
                     <div className='flex flex-col gap-10 w-[40%] items-start'>
                     <div className='text-[16px]'>
-                    The modern StudyNotion is the dictates its own terms. Today, to be a competitive specialist requires more than professional skills.
+                    The modern CodeCrave is the dictates its own terms. Today, to be a competitive specialist requires more than professional skills.
                     </div>
                     <CTAButton active={true} linkto={"/signup"}>
                         <div>

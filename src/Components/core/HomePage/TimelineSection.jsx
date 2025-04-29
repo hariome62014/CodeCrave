@@ -9,23 +9,23 @@ import timelineImage from "../../../assets/Images/TimelineImage.png"
 const timeline = [
     {
         Logo: Logo1,
-        heading: "Leadership",
-        Description:"Fully committed to the success company",
+         heading:"Leadership",
+    Description:"Fully comitted to success company"
     },
     {
         Logo: Logo2,
-        heading: "Leadership",
-        Description:"Fully committed to the success company",
+        heading:"Responsibility",
+    Description:"Students will always be our top priority"
     },
     {
         Logo: Logo3,
-        heading: "Leadership",
-        Description:"Fully committed to the success company",
+         heading:"Flexibility",
+    Description:"The ability to switch is an important skills"
     },
     {
         Logo: Logo4,
-        heading: "Leadership",
-        Description:"Fully committed to the success company",
+          heading:"Solve the problem",
+    Description:"Code your way to a solution"
     },
 ];
 
@@ -70,7 +70,7 @@ const TimelineSection = () => {
 
                 <div className='flex gap-5 items-center px-7'>
                 <p className='text-3xl font-bold'>250</p>
-                    <p className='text-caribbeangreen-300 text-sm'>TYpe of Courses</p>
+                    <p className='text-caribbeangreen-300 text-sm'>Type of Courses</p>
                 </div>
 
             </div>

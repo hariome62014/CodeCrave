@@ -1,12 +1,34 @@
 import { FcGoogle } from "react-icons/fc"
 import { useSelector } from "react-redux"
-
+import { useAuth0 } from "@auth0/auth0-react"
 import frameImg from "../../../assets/Images/frame.png"
 import LoginForm from "./LoginForm"
 import SignupForm from "./SignupForm"
+import { useDispatch } from "react-redux"
+import { login } from "../../../services/operations/authAPI"
+import { useNavigate } from "react-router"
+import { useEffect, useState } from "react"
+import { setUser } from "../../../slices/profileSlice"
 
 function Template({ title, description1, description2, image, formType }) {
   const { loading } = useSelector((state) => state.auth)
+  const {loginWithRedirect,user,getAccessTokenSilently} = useAuth0();
+  const navigate= useNavigate();
+  const dispatch=useDispatch();
+   const [token,setToken]= useState("");
+
+  useEffect(() => {
+    if (user) {
+      const fetchToken = async () => {
+        const token = await getAccessTokenSilently();
+        setToken(token);
+        dispatch(setUser({ user, token }));
+      };
+      fetchToken();
+    }
+  }, [user, getAccessTokenSilently, dispatch]);
+  
+
 
   return (
     <div className="grid min-h-[calc(100vh-3.5rem)] place-items-center">
@@ -25,6 +47,7 @@ function Template({ title, description1, description2, image, formType }) {
               </span>
             </p>
             {formType === "signup" ? <SignupForm /> : <LoginForm />}
+            <button onClick={(e)=>loginWithRedirect()}>Sign In with redirect</button>
           </div>
           <div className="relative mx-auto w-11/12 max-w-[450px] md:mx-0">
             <img
@@ -45,6 +68,7 @@ function Template({ title, description1, description2, image, formType }) {
           </div>
         </div>
       )}
+    {/* {user && <div>{token}</div>} */}
     </div>
   )
 }

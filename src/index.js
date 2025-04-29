@@ -9,7 +9,7 @@ import rootReducer from "./reducers";
 import { Toaster } from "react-hot-toast";
 import ScrollToTop from "./Components/ScrollToTop";
 import swDev from "./swDev";
-
+import { Auth0Provider } from '@auth0/auth0-react';
 const store= configureStore({
     reducer: rootReducer,
 });
@@ -18,7 +18,15 @@ root.render(
     <Provider store={store}>
     <BrowserRouter>
     <ScrollToTop/>
+    <Auth0Provider
+    domain="dev-xy7wbbxernjdx1bi.us.auth0.com"
+    clientId="rWAJFdAqYLsGZUGxWyQj1LHKZQDTnyuH"
+    authorizationParams={{
+      redirect_uri: window.location.origin
+    }}
+  >
     <App />
+  </Auth0Provider>
     <Toaster/>
     </BrowserRouter>
     </Provider>

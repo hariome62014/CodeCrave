@@ -6,11 +6,17 @@ import { useNavigate } from "react-router-dom"
 import { useState } from "react"
 import { TbCornerDownRightDouble } from "react-icons/tb"
 import { BsLightningChargeFill } from "react-icons/bs"
+import { GoogleLogin } from '@react-oauth/google';  // Import Google login component
+import { useAuth0 } from "@auth0/auth0-react"
 
 function Login() {
   const [showDemo, setShowDemo] = useState(true)
   const dispatch = useDispatch()
   const navigate = useNavigate()
+  const {user}= useAuth0();
+
+  
+
   return (
     <>
     {/* test login ID */}
@@ -28,7 +34,7 @@ function Login() {
         <div>
         <button onClick={
           () => {
-            dispatch(login("kumarhimanshusangwan@gmail.com", "12345", navigate)
+            dispatch(login("hariome6201@gmail.com", "12345", navigate)
           )}
         } className="bg-yellow-100 font-semibold mt-4 mb-1 text-richblack-900 px-4 py-2 rounded-md flex">
           <TbCornerDownRightDouble className="text-2xl text-richblack-900 hidden md:block"/>
@@ -53,6 +59,7 @@ function Login() {
       image={loginImg}
       formType="login"
     />
+     
     </>
   )
 }

@@ -20,7 +20,7 @@ exports.createCategory = async (req, res) => {
 		});
 	} catch (error) {
 		return res.status(500).json({
-			success: true,
+			success: false,
 			message: error.message,
 		});
 	}
@@ -89,6 +89,8 @@ exports.categoryPageDetails = async (req, res) => {
 
 		res.status(200).json({
 			selectedCourses: selectedCourses,
+
+
 			differentCourses: differentCourses,
 			mostSellingCourses: mostSellingCourses,
 			success: true,

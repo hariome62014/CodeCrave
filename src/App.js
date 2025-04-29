@@ -32,9 +32,10 @@ import SearchCourse from "./pages/SearchCourse";
 import ViewCourse from "./pages/ViewCourse";
 import VideoDetails from "./Components/core/ViewCourse/VideoDetails";
 import PurchaseHistory from "./Components/core/Dashboard/PurchaseHistory";
-import InstructorDashboard from "./Components/core/Dashboard/InstructorDashboard/InstructorDashboard";
+import InstructorDashboard from "./Components/core/Dashboard/InstructorDashboard/Instructor";
 import { RiWifiOffLine } from "react-icons/ri";
 import AdminPannel from "./Components/core/Dashboard/AdminPannel";
+import InstructorHome from "./pages/InstructorHome";
 
 function App() {
   console.log = function () {};
@@ -64,8 +65,10 @@ function App() {
       )}
       <ScrollToTop />
       <Routes>
+   
         <Route path="/" element={<Home />} />
-
+   
+     
         <Route path="/catalog/:catalog" element={<Catalog />} />
 
         <Route

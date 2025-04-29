@@ -1,39 +1,76 @@
 import React from 'react'
-import { useState } from 'react'
+import { FiTrash2 } from "react-icons/fi"
+import { useState ,useEffect} from 'react'
 import { useSelector } from 'react-redux'
 import { updateAdditionalDetails, updatePassword, updatePfp,deleteAccount } from '../../../services/operations/profileAPI'
 import {AiOutlineEyeInvisible} from 'react-icons/ai'
 import {AiOutlineEye} from 'react-icons/ai'
 import { useDispatch } from 'react-redux'
 import { useNavigate } from 'react-router-dom'
-
-
-
+import { deleteProfile } from '../../../services/operations/SettingsAPI'
+import ConfirmationModal from '../../common/ConfirmationModal'
+import toast from 'react-hot-toast'
+import { updateDisplayPicture } from '../../../services/operations/SettingsAPI'
+import { useRef } from 'react'
+import { FiUpload } from 'react-icons/fi'
 
 const Settings = () => {
+  const [confirmationModal,setConfirmationModal]= useState(null);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user=useSelector(state=>state.profile.user);
 
 
-  //update profile picture
-  const pfp=useSelector(state=>state.profile.user.image);
-  const [profilePicture, setprofilePicture] = useState(pfp)
-  const token= useSelector(state=>state.auth.token);
+  const { token } = useSelector((state) => state.auth);
+  
 
+  const [loading, setLoading] = useState(false);
+  const [imageFile, setImageFile] = useState(null);
+  const [previewSource, setPreviewSource] = useState(null);
 
-  const handleUpload = (e) => {
-    e.preventDefault();
-    const file = e.target[0].files[0];
-    updatePfp(token,file);
-  }
+  const fileInputRef = useRef(null);
+
+  const handleClick = () => {
+    fileInputRef.current.click();
+  };
 
   const handleFileChange = (e) => {
     const file = e.target.files[0];
-    setprofilePicture(URL.createObjectURL(file));
-  }
+    // console.log(file)
+    if (file) {
+      setImageFile(file);
+      previewFile(file);
+    }
+  };
 
+  const previewFile = (file) => {
+    const reader = new FileReader();
+    reader.readAsDataURL(file);
+    reader.onloadend = () => {
+      setPreviewSource(reader.result);
+    };
+  };
 
+  const handleFileUpload = () => {
+    try {
+      console.log("uploading...");
+      setLoading(true);
+      const formData = new FormData();
+      formData.append("displayPicture", imageFile);
+      console.log("formdata", formData)
+      dispatch(updateDisplayPicture(token, formData)).then(() => {
+        setLoading(false);
+      });
+    } catch (error) {
+      console.log("ERROR MESSAGE - ", error.message);
+    }
+  };
+
+  useEffect(() => {
+    if (imageFile) {
+      previewFile(imageFile);
+    }
+  }, [imageFile]);
 
 
 
@@ -113,21 +150,40 @@ const Settings = () => {
         <h1 className="mb-14 text-3xl font-medium text-richblack-5">Edit Profile</h1>
 
         {/* update profile picture */}
-        <div className='flex items-center justify-between rounded-md border-[1px] border-richblack-700 bg-richblack-800 md:p-8 md:px-12 px-3 py-3 text-richblack-5'>
-          <div className='flex items-center gap-x-4'>
-            <img className='aspect-square w-[78px] rounded-full object-cover'  src={profilePicture}></img>
-            <div className='space-y-2'>
+        <div className="flex items-center justify-between rounded-md border-[1px] border-richblack-700 bg-richblack-800 p-8 px-12 text-richblack-5">
+        <div className="flex items-center gap-x-4">
+          <img
+            src={previewSource || user?.image}
+            alt={`profile-${user?.firstName}`}
+            className="aspect-square w-[78px] rounded-full object-cover"
+          />
+          <div className="space-y-2">
             <p>Change Profile Picture</p>
-            <form onSubmit={handleUpload}>
-            <div className='flex flex-row gap-3'>
-              <label className="cursor-pointer rounded-md bg-richblack-700 py-2 px-5 font-semibold text-richblack-50'" htmlFor="upload">Select
-            <input id='upload' type="file" onChange={handleFileChange} className="hidden" accept="image/png, image/gif, image/jpeg"/></label>
-             <button type='submit' className='flex items-center bg-yellow-50 cursor-pointer gap-x-2 rounded-md py-2 px-5 font-semibold text-richblack-900 undefined'>Upload</button>
-            </div>
-            </form>
+            <div className="flex flex-row gap-3">
+              <input
+                type="file"
+                ref={fileInputRef}
+                onChange={handleFileChange}
+                className="hidden"
+                accept="image/png, image/gif, image/jpeg"
+              />
+              <button
+                onClick={handleClick}
+                disabled={loading}
+                className="cursor-pointer text-base rounded-md py-2 px-5 bg-yellow-50 text-richblack-900"
+              >
+                Select
+              </button>
+              <button 
+              onClick={handleFileUpload}
+              className="flex items-center cursor-pointer gap-1 text-base font-medium text-richblack-50 bg-richblack-700 rounded-md px-3">
+                <div>Upload</div>
+                <FiUpload/>
+              </button>
             </div>
           </div>
         </div>
+      </div>
         
 
          {/* update additional info */}
@@ -264,7 +320,7 @@ const Settings = () => {
 
 
            {/* Delete Account */}
-          <div className="my-10 flex flex-row gap-x-5 rounded-md border-[1px] border-pink-700 bg-pink-900 p-3 md:p-8 md:px-12"><div className="flex aspect-square h-14 w-14 items-center justify-center rounded-full bg-pink-700">
+          {/* <div className="my-10 flex flex-row gap-x-5 rounded-md border-[1px] border-pink-700 bg-pink-900 p-3 md:p-8 md:px-12"><div className="flex aspect-square h-14 w-14 items-center justify-center rounded-full bg-pink-700">
           <svg stroke="currentColor" fill="none" strokeWidth="2" viewBox="0 0 24 24" strokeLinecap="round" strokeLinejoin="round" className="text-3xl text-pink-200" height="1em" width="1em" xmlns="http://www.w3.org/2000/svg"><polyline points="3 6 5 6 21 6"></polyline><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path><line x1="10" y1="11" x2="10" y2="17"></line><line x1="14" y1="11" x2="14" y2="17"></line></svg>
           </div>
           <div className="flex flex-col space-y-2 w-full">
@@ -274,7 +330,42 @@ const Settings = () => {
             </p>
             </div><button type="button" onClick={onDeleteAccount} className="w-fit cursor-pointer italic text-pink-300">I want to delete my account.</button>
             </div>
-            </div>
+            </div> */}
+
+
+<div className="my-10 flex flex-row gap-x-5 rounded-md border-[1px] border-pink-700 bg-pink-900 p-8 px-12">
+        <div className="flex aspect-square h-14 w-14 items-center justify-center rounded-full bg-pink-700">
+          <FiTrash2 className="text-3xl text-pink-200" />
+        </div>
+        <div className="flex flex-col space-y-2">
+          <h2 className="text-lg font-semibold text-richblack-5">
+            Delete Account
+          </h2>
+          <div className="w-3/5 text-pink-25">
+            <p>Would you like to delete account?</p>
+            <p>
+              This account may contain Paid Courses. Deleting your account is
+              permanent and will remove all the contain associated with it.
+            </p>
+          </div>
+          <button
+            type="button"
+            className="w-fit cursor-pointer italic text-pink-300"
+            onClick={ () => setConfirmationModal({
+              text1: "Are You Sure ?",
+              text2: "Your Account will be Permanently deleted",
+              btn1Text: "Delete",
+              btn2Text:"Cancel",
+              btn1Handler: () => dispatch(deleteProfile(token, navigate)),
+              btn2Handler: () => setConfirmationModal(null),
+          })}
+          >
+            I want to delete my account.
+          </button>
+        </div>
+        {confirmationModal && <ConfirmationModal modalData={confirmationModal} />}
+
+      </div>
 
 
        </div>

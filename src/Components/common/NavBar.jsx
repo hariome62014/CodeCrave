@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import logo from "../../assets/Logo/Logo-Full-Light.png"
+import logo from "../../assets/Logo/logo2.png";
 import { Link, matchPath } from 'react-router-dom'
 import { NavbarLinks } from '../../data/navbar-links'
 import { useLocation } from 'react-router-dom'
@@ -25,6 +25,8 @@ const NavBar = ({ setProgress }) => {
     const [visible, setVisible] = useState(true)
     const [searchValue, setSearchValue] = useState("")
     const navigate = useNavigate();
+    const [searchVisible, setSearchVisible] = useState(false);
+
 
 
 
@@ -61,6 +63,22 @@ const NavBar = ({ setProgress }) => {
         overlay.current.classList.toggle('hidden');
     }
 
+    const searchRef = useRef(null);
+
+    // Detect clicks outside the search form
+    useEffect(() => {
+      const handleClickOutside = (event) => {
+        if (searchRef.current && !searchRef.current.contains(event.target)) {
+          setSearchVisible(false); // Hide the search bar
+        }
+      };
+  
+      document.addEventListener('mousedown', handleClickOutside);
+      return () => {
+        document.removeEventListener('mousedown', handleClickOutside);
+      };
+    }, []);
+
 
 
     //handeling navbar scroll
@@ -93,15 +111,22 @@ const NavBar = ({ setProgress }) => {
 
     return (
         <div className={` flex sm:relative bg-richblack-900 w-screen relative z-50 h-14 items-center justify-center border-b-[1px] border-b-richblack-700 translate-y-  transition-all duration-500`}>
+         {/* {user && <div>{token}</div>} */}
             <div className='flex w-11/12 max-w-maxContent items-center justify-between'>
                 <Link to='/' onClick={() => { dispatch(setProgress(100)) }}>
-                    <img src={logo} width={160} alt="Study Notion" height={42}></img>
+                <img 
+  src={logo} 
+  alt="CodeCrave" 
+  className="w-[90px] h-[35px] sm:w-[90px] sm:h-[35px] md:w-[120px] md:h-[35px] lg:w-[160px] lg:h-[42px]" 
+/>
+
                 </Link>
-                {/* mobile Navbar */}
-                {
-                    user && user?.accountType !== "Instructor" && (
+
+                  {/* mobile Navbar */}
+          {
+                    user && user?.accountType !== "Instructor"&& user?.accountType !== "Admin" && (
                         <div className=' md:hidden'>
-                            <Link to='/dashboard/cart' className=' relative left-10' onClick={() => { dispatch(setProgress(100)) }} >
+                            <Link to='/dashboard/cart' className='' onClick={() => { dispatch(setProgress(100)) }} >
                                 <div className=''>
                                     <TiShoppingCart className=' fill-richblack-25 w-8 h-8' />
                                 </div>
@@ -116,18 +141,45 @@ const NavBar = ({ setProgress }) => {
                             </Link>
                         </div>
                     )
-                }
+                }    
+              
 
-                <div className={`flex md:hidden  relative gap- flex-row ${token !== null && user?.accountType !== "Instructor" ? " -left-12" : ""}`}>
-                    <GiHamburgerMenu className={`w-16 h-8 fill-richblack-25 absolute left-10 -bottom-4 `} onClick={shownav} />
-                    <div ref={overlay} className=' fixed top-0 bottom-0 left-0 right-0 z-30 bg w-[100vw] hidden h-[100vh] overflow-y-hidden bg-[rgba(0,0,0,0.5)] ' onClick={shownav}></div>
+                <div className={`flex md:hidden  relative  flex-row ${token !== null && user?.accountType !== "Instructor" ? " " : ""} items-center gap-y-8`}>
+
+           
+  
+  <form onSubmit={handelSearch} ref={searchRef} className='flex items-center'>
+    <button
+      type='button'
+      onClick={() => setSearchVisible(!searchVisible)}
+      className='text-richblack-100 cursor-pointer'
+    >
+      <HiSearch size={25} className='z-40' />
+    </button>
+    {searchVisible && (
+      <input
+        value={searchValue}
+        onChange={(e) => setSearchValue(e.target.value)}
+        id='searchinput'
+        type='text'
+        placeholder='Search'
+        className='absolute  l-6 border-0 focus:ring-1 ring-richblack-400 rounded-full px-2 py-1 text-[15px] w-28 text-richblack-50 focus:outline-none bg-richblack-700 z-30'
+      />
+    )}
+  </form>
+ 
+
+                    <GiHamburgerMenu className={`w-16 h-8 fill-richblack-25 absolute left-10 `} onClick={shownav} />
+                    <div ref={overlay} className=' fixed top-0 bottom-0 left-0 right-0 z-20 bg w-[100vw] hidden h-[100vh] overflow-y-hidden bg-[rgba(0,0,0,0.5)] ' onClick={shownav}></div>
                     <div ref={show} className='mobNav z-50'>
                         <nav className=' items-center flex flex-col absolute w-[200px] -left-[80px] -top-7  glass2' ref={show}>
                             {
+
                                 token == null && (
                                     <Link to='/login' className='' onClick={() => { dispatch(setProgress(100)) }} >
                                         <button onClick={shownav} className=' mt-4 text-center text-[15px] px-6 py-2 rounded-md font-semibold bg-yellow-50 text-black hover:scale-95 transition-all duration-200'>
                                             Login
+                                            {/* <div>{token}</div> */}
                                         </button>
                                     </Link>
                                 )
@@ -186,7 +238,7 @@ const NavBar = ({ setProgress }) => {
 
                 {/* Desktop Navbar */}
                 <nav>
-                    <ul className=' flex-row gap-x-6 text-richblack-25 gap-5 hidden md:flex'>
+                    <ul className=' flex-row gap-x-4 text-richblack-25 hidden md:flex'>
                         {
                             NavbarLinks?.map((element, index) => (
                                 <li key={index} >
@@ -231,57 +283,87 @@ const NavBar = ({ setProgress }) => {
                                 </li>
                             ))
                         }
-                        <form onSubmit={handelSearch} className='flex items-center relative'>
-                            <input value={searchValue} onChange={(e) => { setSearchValue(e.target.value) }} id='searchinput' type="text" placeholder="Search" className=' absolute top-0 left-0 border-0 focus:ring-1 ring-richblack-400 rounded-full px-2 py-1 text-[15px] w-28 text-richblack-50 focus:outline-none focus:border-transparent bg-richblack-700' />
-                            <HiSearch type='submit' id='searchicon' size={20} className=" text-richblack-100 top-1 absolute cursor-pointer left-20" />
-                        </form>
+                        
                     </ul>
                 </nav>
 
-                <div className='flex-row gap-5 hidden md:flex items-center'>
-                    {
-                        user && user?.accountType !== "Instructor" && (
-                            <Link to='/dashboard/cart' className=' relative px-4 ' onClick={() => { dispatch(setProgress(100)) }} >
-                                <div className=' z-50'>
-                                    <TiShoppingCart className=' fill-richblack-25 w-7 h-7' />
-                                </div>
-                                {
-                                    totalItems > 0 && (
-                                        <span className=' shadow-sm shadow-black text-[10px] font-bold bg-yellow-100 text-richblack-900 rounded-full px-1 absolute -top-[2px] right-[8px]'>
-                                            {totalItems}
-                                        </span>
-                                    )
-                                }
+                <div className='flex-row hidden md:flex gap-2 items-center'>
+                    <div className='relative'>
+ 
+  <form onSubmit={handelSearch} ref={searchRef} className='flex items-center'>
+    <button
+      type='button'
+      onClick={() => setSearchVisible(!searchVisible)}
+      className='text-richblack-100 cursor-pointer'
+    >
+      <HiSearch size={20} />
+    </button>
+    {searchVisible && (
+      <input
+        value={searchValue}
+        onChange={(e) => setSearchValue(e.target.value)}
+        id='searchinput'
+        type='text'
+        placeholder='Search'
+        className='absolute  right-6 border-0 focus:ring-1 ring-richblack-400 rounded-full px-2 py-1 text-[15px] w-28 text-richblack-50 focus:outline-none bg-richblack-700'
+      />
+    )}
+  </form>
+  </div>
 
-                            </Link>
-                        )
-                    }
-                    {
-                        token == null && (
-                            <Link to='/login' className='text-richblack-25' onClick={() => { dispatch(setProgress(100)) }} >
-                                <button className='rounded-[8px] border border-richblack-700 bg-richblack-800 px-[12px] py-[7px] text-richblack-100'>
-                                    Login
-                                </button>
-                            </Link>
-                        )
-                    }
-                    {
-                        token == null && (
-                            <Link to='/signup' className='text-richblack-25' onClick={() => { dispatch(setProgress(100)) }} >
-                                <button className='rounded-[8px] border border-richblack-700 bg-richblack-800 px-[12px] py-[7px] text-richblack-100' >
-                                    Signup
-                                </button>
-                            </Link>
-                        )
-                    }
-                    {
-                        token !== null && (
-                            <div className=' pt-2' >
-                                <ProfileDropDown />
-                            </div>
-                        )
-                    }
-                </div>
+  {/* Cart Link */}
+ 
+  {user && user?.accountType !== 'Instructor' && user?.accountType !== "Admin" && (
+    <Link
+      to='/dashboard/cart'
+      className='relative px-4'
+      onClick={() => dispatch(setProgress(100))}
+    >
+      <div className='z-50'>
+        <TiShoppingCart className='fill-richblack-25 w-7 h-7' />
+      </div>
+      {totalItems > 0 && (
+        <span className='shadow-sm shadow-black text-[10px] font-bold bg-yellow-100 text-richblack-900 rounded-full px-1 absolute -top-[2px] right-[8px]'>
+          {totalItems}
+        </span>
+      )}
+    </Link>
+  )}
+
+  {/* Login Link */}
+  {token == null && (
+    <Link
+      to='/login'
+      className='text-richblack-25'
+      onClick={() => dispatch(setProgress(100))}
+    >
+      <button className='rounded-[8px] border border-richblack-700 bg-richblack-800 px-[12px] py-[7px] text-richblack-100'>
+        Login
+      </button>
+    </Link>
+  )}
+
+  {/* Signup Link */}
+  {token == null && (
+    <Link
+      to='/signup'
+      className='text-richblack-25'
+      onClick={() => dispatch(setProgress(100))}
+    >
+      <button className='rounded-[8px] border border-richblack-700 bg-richblack-800 px-[12px] py-[7px] text-richblack-100'>
+        Signup
+      </button>
+    </Link>
+  )}
+
+  {/* Profile Dropdown */}
+  {token !== null && (
+    <div className='pt-2'>
+      <ProfileDropDown />
+    </div>
+  )}
+</div>
+
             </div>
         </div>
     )

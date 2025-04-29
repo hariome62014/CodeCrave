@@ -52,18 +52,20 @@ useEffect(() => {
 
   return (
     <div>
-      <div className=' box-content bg-richblack-800 px-4'>
-      <div className='mx-auto flex min-h-[260px]  flex-col justify-center gap-4 '>
+      <div className=' box-content bg-richblack-800'>
+      <div className='mx-auto flex min-h-[160px]  flex-col justify-center gap-4 lg:max-w-maxContent '>
         <p className='text-sm text-richblack-300'>Home / Catalog / <span className='text-yellow-25'>{Catalog.catalog}</span> </p>
+        <div className='flex-col gap-2   '>
         <p className='text-3xl text-richblack-5'>{Catalog?.catalog}</p>
         <p className='max-w-[870px] text-richblack-200'>
           {Desc?.description}
         </p>
+        </div>
       </div>
       </div>
 
       <div className=' mx-auto box-content w-full max-w-maxContentTab px-2 py-12 lg:max-w-maxContent'>
-        <h2 className='Courses to get you started'>
+        <h2 className='text-2xl font-md text-white'>
         Courses to get you started
         </h2>
         <div className='my-4 flex border-b border-b-richblack-600 text-sm'>

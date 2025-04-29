@@ -19,7 +19,7 @@ export async function getUserCourses(token,dispatch){
         profileEndpoints.GET_USER_ENROLLED_COURSES_API,
         null,
         {
-          Authorisation: `Bearer ${token}`,
+          Authorization: `Bearer ${token}`,
         }
       )
       console.log("AFTER Calling BACKEND API FOR ENROLLED COURSES");
@@ -43,29 +43,49 @@ export async function getUserCourses(token,dispatch){
 
 
 //updateProfilePicture
-export async function updatePfp(token,pfp){
+
+export async function updatePfp(token, pfp) {
   const toastId = toast.loading("Uploading...");
+  
   try {
     const formData = new FormData();
-    console.log("pfp",pfp)
-    formData.append('pfp',pfp);
-    const response = await apiConnector("PUT", settingsEndpoints.UPDATE_DISPLAY_PICTURE_API,formData,{
-      Authorisation: `Bearer ${token}`,
+    console.log("pfp", pfp);
+    formData.append('pfp', pfp);
+
+    const response = await apiConnector("PUT", settingsEndpoints.UPDATE_DISPLAY_PICTURE_API, formData, {
+      Authorization: `Bearer ${token}`,
     });
-    console.log("UPDATE_DISPLAY_PICTURE_API API RESPONSE............", response)
+
+    console.log("UPDATE_DISPLAY_PICTURE_API API RESPONSE............", response);
+
     if (!response.data.success) {
-      throw new Error(response.data.message)
+      throw new Error(response.data.message);
     }
+
     toast.success("Profile Picture Updated Successfully");
+
     const imageUrl = response.data.data.image;
-    localStorage.setItem("user",JSON.stringify({...JSON.parse(localStorage.getItem("user")),image:imageUrl}));
-    console.log(JSON.parse(localStorage.getItem("user")).image);
+    
+    // Update localStorage with new image URL
+    const userData = JSON.parse(localStorage.getItem("user"));
+    if (userData) {
+      userData.image = imageUrl;
+      localStorage.setItem("user", JSON.stringify(userData));
+    }
+
+    console.log("Updated image in localStorage:", userData?.image);
+
   } catch (error) {
-    console.log("UPDATE_DISPLAY_PICTURE_API API ERROR............", error)
-    toast.error(error.response.data.message);
+    console.log("UPDATE_DISPLAY_PICTURE_API API ERROR............", error);
+    
+    // Handle case where error.response is undefined
+    const errorMessage = error.response?.data?.message || "An error occurred while updating the profile picture";
+    toast.error(errorMessage);
   }
+
   toast.dismiss(toastId);
 }
+
 
 
 
@@ -153,7 +173,7 @@ export async function deleteAccount(token,dispatch,navigate){
 }
 
 //get instructor dashboard
-export async function getInstructorDashboard(token,dispatch){
+export async function getInstructorData(token,dispatch){
   // const toastId = toast.loading("Loading...");
   dispatch(setProgress);
   let result = []
@@ -164,7 +184,7 @@ export async function getInstructorDashboard(token,dispatch){
       profileEndpoints.GET_ALL_INSTRUCTOR_DASHBOARD_DETAILS_API,
       null,
       {
-        Authorisation: `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
       }
     )
     console.log("AFTER Calling BACKEND API FOR INSTRUCTOR DASHBOARD");

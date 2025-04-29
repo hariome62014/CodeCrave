@@ -4,6 +4,7 @@ import {getUserCourses as getUserEnrolledCourses}  from '../../../services/opera
 import ProgressBar from '@ramonak/react-progress-bar';
 import { useDispatch } from 'react-redux';
 import { useNavigate } from 'react-router';
+import LoadingBar from 'react-top-loading-bar';
 
 const EnrolledCourses = () => {
     const dispatch=useDispatch();
@@ -53,7 +54,7 @@ const EnrolledCourses = () => {
         <div className='text-3xl text-richblack-50'>Enrolled Courses</div>
         {
             !enrolledCourses ? (<div>
-                Loading...
+                <LoadingBar/> 
             </div>)
             : !enrolledCourses.length ? (<p className='grid h-[10vh] w-full place-content-center text-richblack-5'>You have not enrolled in any course yet</p>)
             : (
